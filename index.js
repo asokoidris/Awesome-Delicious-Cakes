@@ -1,5 +1,5 @@
 const db = require ('./app/config/db')
-const key = require ('./app/config/key')
+const keys = require ('./app/config/key')
 const server = require ('./app/routes/index')
 
 

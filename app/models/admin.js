@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const mongoosePaginate = require("mongoose-paginate");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const AdminSchema = new mongoose.Schema({
   username: {
@@ -30,7 +30,14 @@ const AdminSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-});
+
+  phoneNumber : {
+    type : Number,
+    required : true
+  },
+},
+{timestamps : true}
+);
 
 AdminSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model("Admin", AdminSchema);
