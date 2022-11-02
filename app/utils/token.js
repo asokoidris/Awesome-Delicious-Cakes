@@ -1,11 +1,16 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
+const { JWTSECRET } = require('../config/key');
 
+/**
+ * @description - This is a class that generates and verifies tokens
+ */
 class Token {
   /**
-   * @description function to generate a token
-   * @param {Object} user - req body object from the Diagnostic Center controller
-   * @returns {Object} - Returned object
-   **/
+   * @description - This method is used to generate a token
+   * @param {object} payload - The payload to be signed
+   * @returns {string} - Returns a string
+   * @memberof Token
+   */
   static generateToken(user) {
     const payload = {
       subject: user.id,
@@ -13,41 +18,50 @@ class Token {
     };
 
     const options = {
-      expiresIn: "1d",
+      expiresIn: '1d',
     };
     try {
       const token = jwt.sign(payload, JWTSECRET, options);
-      logger.info("token Successfully created");
+      logger.info('token Successfully created');
       return token;
     } catch (err) {
       logger.error(`Error generating token ${JSON.stringify(err)}`);
-      return "Error generating token";
+      throw new Error(err.message);
     }
   }
 
   /**
-   * @description function to verify the token
-   * @param {Object} token - req body object from the Diagnostic Center controller
-   * @returns {Object} - Returned object
-   **/
-  static async verifyToken(token) {
+   * @description - This method is used to verify a token
+   * @param {string} token - The token to be verified
+   * @returns {object} - Returns an object
+   * @memberof Token
+   */
+  static verifyToken(token) {
     try {
       const decoded = jwt.verify(token, JWTSECRET);
-
-      const user = await DiagnosticCenterSchema.findById(decoded.subject);
-      if (!user) {
-        logger.error(`Invalid token ${JSON.stringify(user)}`);
-        return { message: "Invalid token", statusCode: 400 };
-      }
-      logger.info(`Token verified successfully ${JSON.stringify(user)}`);
-      return { data: user, statusCode: 200 };
+      logger.info('token Successfully verified');
+      return decoded;
     } catch (err) {
-      if (err.name === "TokenExpiredError") {
-        logger.error(`Token expired ${JSON.stringify(err)}`);
-        return { message: "Token expired", statusCode: 400 };
-      }
-      logger.error(`Invalid Token${JSON.stringify(err)}`);
-      return { message: "Invalid Token", statusCode: 400 };
+      logger.error(`Error verifying token ${JSON.stringify(err)}`);
+      throw new Error(err.message);
+    }
+  }
+
+  /**
+   *  @description - This method is used to decode a token
+   * @param {string} token - The token to be decoded
+   * @returns {object} - Returns an object
+   * @memberof Token
+   * */
+
+  static decodeToken(token) {
+    try {
+      const decoded = jwt.decode(token, { complete: true });
+      logger.info('token Successfully decoded');
+      return decoded;
+    } catch (err) {
+      logger.error(`Error decoding token ${JSON.stringify(err)}`);
+      throw new Error(err.message);
     }
   }
 }

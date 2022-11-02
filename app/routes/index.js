@@ -3,26 +3,35 @@ const bodyParser = require ('body-parser');
 const morgan = require ('morgan');
 const cors = require ('cors')
 const helmet = require ('helmet');
-
+const Logger = require('../config/logger');
 
 const app = express();
 
 
-const adminRoutes = require ('../routes/admin');
+const userRoutes = require ('../routes/user-routes');
 
 
 
 
 
 
-app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({extended : false}))
-app.use(bodyParser.json())
-app.use(cors())
-app.use(helmet())
+global.logger = Logger.createLogger({ label: 'Awesome Delicious Cake' });
+
+app.use(helmet());
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'UPDATE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(morgan('combined', { stream: logger.stream }));
 
 
-app.use('/api/admin', adminRoutes)
+
+app.use('/user', userRoutes)
 
 
 

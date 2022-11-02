@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2')
-
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -15,17 +13,6 @@ const UserSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
-
-    firstName: {
-        type: String,
-        required: [true, "User must have a firstName"],
-        trim: true,
-    },
-    lastName: {
-        type: String,
-        required: [true, "User must have a lastName"],
-        trim: true,
-    },
     password: {
         type: String,
         required: true,
@@ -33,8 +20,9 @@ const UserSchema = new mongoose.Schema({
 
 
 },
+
     { timestamps: true }
 );
 
-AdminSchema.plugin(mongoosePaginate);
+
 module.exports = mongoose.model("User", UserSchema);
