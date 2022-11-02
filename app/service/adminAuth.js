@@ -1,5 +1,10 @@
 const HelperFunctions =require ('../utils/helperFunction')
-const {successResponse,errorResponse} = require ('../utils/response')
+const {
+  successResponse,
+  loginSuccessResponse,
+  errorResponse,
+  paginationSuccessResponse,
+} = require ('../utils/response')
 const AdminSchema = require ('../models/admin');
 const Admin = require ('../class/admin')
 
@@ -15,17 +20,18 @@ class AdminAuthService {
    */
 
   static async signUpAdminService(data) {
+    try{  
     const {email, phoneNumber} = data;
     const checkAdminAuthExist = await AdminSchema.findOne({
         email, phoneNumber
-    })
+    });
   
-  if (checkAdminAuthExist !== 'undefined' && checkAdminAuthExist !== null) {
-       return {
-      statusCode: 409,
-      message: 'Admin Already Exist',
-    };
-  }
+    if (checkAdminAuthExist)
+    return successResponse(
+      res,
+      409,
+      'admin already exit'
+  )
   const hashedPassword = await HelperFunctions.hashPassword(password);
   const createAdmin = await AdminSchema.create({
     email: data.email,
@@ -35,10 +41,17 @@ class AdminAuthService {
     password: hashedPassword
   })
 
-  logger.info(`Admin Created Succesfully ${JSON.stringify(createAdmin)}`);
+  // logger.info(`Admin Created Succesfully ${JSON.stringify(createAdmin)}`);
   const admin = new Admin(createAdmin);
-  return { data: admin, statusCode: 200 };
-
+  return successResponse(
+      res,
+      201,
+      'Admin successfully registered',
+      admin
+  )
+  }catch (error) {
+    return errorResponse(res, 500, 'Internal Server Error')
+}
 }}
 
 module.exports = AdminAuthService

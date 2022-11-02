@@ -1,11 +1,12 @@
-const express = require ('express');
-const app = express();
+const express = require ('express')
 const bodyParser = require ('body-parser');
 const morgan = require ('morgan');
 const cors = require ('cors')
 const helmet = require ('helmet');
-const logger = require("../config/logger");
-const keys = require ('../config/key')
+
+
+const app = express();
+
 
 const adminRoutes = require ('../routes/admin');
 
@@ -14,8 +15,8 @@ const adminRoutes = require ('../routes/admin');
 
 
 
-app.use(morgan("combined", { stream: logger.stream }));
-app.use(bodyParser.urlencoded({extended : true}))
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({extended : false}))
 app.use(bodyParser.json())
 app.use(cors())
 app.use(helmet())

@@ -1,6 +1,11 @@
 const AdminAuthService = require ('../service/adminAuth');
-const {successResponse,errorResponse} = require ('../utils/response') 
-
+const{
+  successResponse,
+  loginSuccessResponse,
+  errorResponse,
+  paginationSuccessResponse,
+} = require ('../utils/response') 
+ 
 
 
 class adminController {
@@ -15,22 +20,17 @@ class adminController {
     static async signUpAdminController(req, res) {
       try {
         const result = await AdminAuthService.signUpAdminService(req.body);
-        logger.info(`Admin Succesfully SignUp ${JSON.stringify(result)}`);
-        if (result.statusCode === 201) {
-          return successResponse(
-            res,
-            result.statusCode,
-            "Admin successfully SignUp",
-            result.data
-          );
-        } else {
-          return errorResponse(res, result.statusCode, result.message);
-        }
-      } catch (error) {
-        logger.error;
-        `Admin registration error ${JSON.stringify(err.message)}`;
-        return errorResponse(res, 500, "Ooops, something went wrong.");
-      }
+         
+        return successResponse(
+          res,
+          201,
+          'Admin successfully registered',
+          result
+      )
+      }catch (error) {
+        return errorResponse(res, 500, 'Internal Server Error')
+    }
+
     }
   }
 
